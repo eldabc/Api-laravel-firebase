@@ -26,7 +26,7 @@ class FirebaseController extends FirebaseService
             'name' => $request->name,
             'body' => $request->body,  
         ];
-        // dd($request->name);
+        
         $postRef = $this->service->db->getReference('/posts')->push($postData);
 
         $postKey = $postRef->getKey();
@@ -39,14 +39,14 @@ class FirebaseController extends FirebaseService
           "name" => $request->name,
           "body" => $request->body
       ];
-        // dd($editData);
+
       $newPostKey = $this->service->db->getReference('/posts')->push()->getKey();
 
       $updates = [
           'posts/'.$uid => $editData,
       ];
 
-      $this->service->db->getReference() // this is the root reference
+      $this->service->db->getReference()
              ->update($updates);
     }
 
@@ -55,67 +55,8 @@ class FirebaseController extends FirebaseService
         try{
             $this->service->db->getReference('/posts/'.$uid)->remove();
             return "Deleted";
-        }catch (\Exception $exception){
+        }catch (FirebaseException $e){
             return "Error";
         }
     }
-
-    // public function addUser(Request $request)
-    // {
-    //     try {
-    //         $auth = $this->service->firebase->createAuth();
-    //         $userProperties = [
-    //             'email' => $request->email,
-    //             'emailVerified' => false,
-    //             'password' => $request->password,
-    //             'displayName' => $request->displayName,
-    //         ];
-   
-    //         return $auth->createUser($userProperties);
-    //     } catch (FirebaseException $e) {
-    //         return "Ha ocurrido un error, email debe ser único";
-    //     } 
-    // } 
-
-    // public function signIn($email, $password)
-    // {
-    //   try {
-    //     $auth = $this->service->firebase->createAuth();
-    //     $signInResult = $auth->signInWithEmailAndPassword($email, $password);
-    //     return $signInResult->firebaseUserId();
-
-    //   } catch (FirebaseException $e) {
-    //     return "Usuario o clave inválidos";
-    //   }
-    // }
-
-    // public function signOut($email, $password)
-    // {
-    //   $auth = $this->service->firebase->createAuth();
-    //   try {
-    //     $signInResult = $auth->signOut();
-    //     return "Salir";
-
-    //   } catch (Exception $e) {
-    //     return "Error";
-    //   }
-      
-    //   return $signInResult;
-    // }
-
-    // public function changePassword(Request $request)
-    // {
-    //   echo "hika";
-    //       // dd($request);
-    //   try {
-    //     $auth = $this->service->firebase->createAuth();
-          
-
-    //     $updatedUser = $auth->changeUserPassword($request->uid, $request->password);
-    //     return "Clave cambiada";
-
-    //   } catch (FirebaseException $e) {
-    //     return "Algo ha salido mal ".$e;
-    //   }
-    // }
 }

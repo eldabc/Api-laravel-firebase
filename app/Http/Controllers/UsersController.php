@@ -21,8 +21,7 @@ class UsersController extends FirebaseService
         $users = $this->auth->listUsers($defaultMaxResults = 1000, $defaultBatchSize = 1000);
         $array=[];
         foreach ($users as $user) {
-            array_push($array,$user->uid, $user->email );
-            // print_r($user->email);
+            array_push($array,$user->uid, $user->email);
         }
         // print_r($array);
         return $array;
@@ -37,8 +36,9 @@ class UsersController extends FirebaseService
                 'emailVerified' => false,
                 'password' => $request->password,
                 'displayName' => $request->displayName,
+                'customClaims' => $request->customClaims
             ];
-   
+
             return $this->auth->createUser($userProperties);
 
         } catch (FirebaseException $e) {
@@ -105,16 +105,4 @@ class UsersController extends FirebaseService
         return "Algo ha salido mal ".$e;
       }
     }
-
-    // public function signOut($email, $password)
-    // {
-    //   try {
-    //     $auth = $this->firebase->createAuth();
-    //     $signInResult = $auth->signOut();
-    //     return "Ha finalizado sesión";
-
-    //   } catch (FirebaseException $e) {
-    //     return "Ha ocurrido un error";
-    //   }
-    // }
 }
