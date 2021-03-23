@@ -11,7 +11,8 @@ use Kreait\Firebase\Factory;
 
     public function __construct()
     {
-      $this->firebase = (new Factory)->withServiceAccount(__DIR__.env('FIREBASE_CREDENTIALS'));
+      // dd(env('FIREBASE_CREDENTIALS'));
+      $this->firebase = (new Factory)->withServiceAccount(__DIR__."/../../key/FirebaseKey.json");
       $this->db = $this->firebase->createDatabase();  
     }
 

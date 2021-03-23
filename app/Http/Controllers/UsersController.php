@@ -30,16 +30,24 @@ class UsersController extends FirebaseService
     public function store(Request $request)
     {
         try {
-
             $userProperties = [
                 'email' => $request->email,
                 'emailVerified' => false,
                 'password' => $request->password,
-                'displayName' => $request->displayName,
-                'customClaims' => $request->customClaims
+                'displayName' => $request->displayName
             ];
+            
+            $user   = $this->auth->createUser($userProperties);
+            
+            // set Custom Claims
+            $this->auth->setCustomUserClaims($user->uid, ['isAdmin' => true, 'key' => '1234567']);
+            
+            // get Custom Claims
+            $claims = $this->auth->getUser($user->uid)->customClaims;
+            
+            $data = ['userData' => $user, 'claims' => $claims];
 
-            return $this->auth->createUser($userProperties);
+            return $data;
 
         } catch (FirebaseException $e) {
             return "Ha ocurrido un error. ".$e->getMessage();
@@ -59,7 +67,6 @@ class UsersController extends FirebaseService
 
     public function update(Request $request, $uid)
     {
-        // dd($request);
         try {
             $properties = [
                 'email' => $request->email,
@@ -88,8 +95,11 @@ class UsersController extends FirebaseService
       try {
 
         $signInResult = $this->auth->signInWithEmailAndPassword($request->email, $request->password);
-        return $signInResult->firebaseUserId();
 
+        $claims = $this->auth->getUser($signInResult->firebaseUserId())->customClaims;
+        $data = ['userDataToken' => $signInResult->data(), 'claims' => $claims];
+        
+        return $data;
       } catch (FirebaseException $e) {
         return "Usuario o clave inválidos ".$e->getMessage();
       }
@@ -102,7 +112,7 @@ class UsersController extends FirebaseService
         return "Clave cambiada";
 
       } catch (FirebaseException $e) {
-        return "Algo ha salido mal ".$e;
+        return "Algo ha salido mal ".$e->getMessage();
       }
     }
 }

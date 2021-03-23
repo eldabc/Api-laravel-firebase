@@ -19,6 +19,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::resource('/firebase', 'FirebaseController');
+Route::resource('/fire-store', 'FireStoreController');
 
 Route::resource('/users', 'UsersController');
 Route::post('/signIn', 'UsersController@signIn');

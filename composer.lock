@@ -1432,7 +1432,6 @@
                 "riverline/multipart-parser": "^2.0"
             },
             "require-dev": {
-                "google/cloud-firestore": "^1.11",
                 "phpstan/extension-installer": "^1.0",
                 "phpstan/phpstan": "^0.12.53",
                 "phpstan/phpstan-phpunit": "^0.12.6",
@@ -1440,7 +1439,7 @@
                 "symfony/var-dumper": "^5.0"
             },
             "suggest": {
-                "google/cloud-firestore": "^1.0 to use the Firestore component"
+
             },
             "type": "library",
             "extra": {
