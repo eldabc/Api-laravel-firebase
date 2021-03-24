@@ -1,41 +1,73 @@
 <?php 
 namespace App\Services;
+
+use Exception;
+use MrShan0\PHPFirestore\FirestoreClient;
+use MrShan0\PHPFirestore\FirestoreDocument;
 use Kreait\Firebase\Exception\FirebaseException;
-use Throwable;
-use Kreait\Firebase\Factory;
-use Google\Cloud\Firestore\FirestoreClient;
 
-// require '../../vendor/autoload.php';
-
-ini_set("display_errors", 1);
-ini_set("track_errors", 1);
-ini_set("html_errors", 1);
-error_reporting(E_ALL);
-// namespace Google\Cloud\Firestore\FirestoreClient;
-
-  class FireStoreService
+class FireStoreService
+{
+  protected $firestoreClient;
+  public function __construct()
   {
-    protected $firestore;
-    protected $db;
-    protected $storageCliente;
-
-    public function __construct()
-    {
-        // $this->initialize();
-      $this->firestore = (new Factory)->withServiceAccount(__DIR__."/../../key/FirebaseKeyNew.json");
-      //   $this->db = new FirestoreClient();  
-      $this->db = $this->firestore->createFirestore();  
-      // $this->storageCliente = $this->db->getStorageClient();
-    }
-
-
-
-    function initialize()
-    {
-        dd($this->storageCliente);
-        // Create the Cloud Firestore client
-        // $db = new FirestoreClient();
-        // printf('Created Cloud Firestore client with default project ID.' . PHP_EOL);
-    }
-
+    $this->firestoreClient = new FirestoreClient('test-6c9bf', 'AIzaSyBXpsfiOvCOaTsGMdeXs4Yzb6c1N4g87_I',  [
+      'database' => '(default)',
+    ]);
   }
+
+  public function listDocument()
+  {
+    return $collections = $this->firestoreClient->listDocuments('users');
+  }
+
+  public function addDocument()
+  {
+    try{
+
+      $document = new FirestoreDocument;
+      $document->fillValues([
+        'string' => 'abc1234567',
+        'boolean' => true,
+        'string' => ['string'=>'abc1234567', 'data' => 'test data'],
+      ]);
+
+      return $this->firestoreClient->addDocument('date', $document);
+
+    }catch(\GuzzleHttp\Exception\ConnectException $e){
+      return "Error. ".$e->getMessage();
+    }
+  }
+
+  public function updateDocument(){
+    try{
+    
+        return $this->firestoreClient->updateDocument('users/IyatDcWVQGdgFRPctXdW', [
+            'string' => 'Edit Test',
+            'boolean' => true,
+            'string' => ['string'=>'String Edit', 'data' => 'Data Edit'],
+        ], true);
+
+    }catch(\MrShan0\PHPFirestore\Exceptions\Client\NotFound $e){
+      return "Error al actualizar. ".$e->getMessage();
+    }
+  }
+
+  public function getDocument(){
+    try {
+        return $this->firestoreClient->getDocument('users/SIvZyzofC6YRzxRcnLwB');
+    } catch (FirestoreDocument $e) {
+        return "Error al obnete documento. ";
+    }
+  }
+
+  public function deleteDocument()
+  {
+    try {
+      $collection = 'users/';
+      return  $this->firestoreClient->deleteDocument($collection, ['id' => 'IyatDcWVQGdgFRPctXdWf']);
+    } catch (Exception $e) {
+      return  "Error. ".$e;
+    }
+  }
+}

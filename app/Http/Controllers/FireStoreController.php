@@ -16,8 +16,5 @@ class FireStoreController extends FireStoreService
 
     function index(){
         dd($this->service);
-        $reference = $this->service->db->getReference('/posts');
-        $registros = $reference->getValue();
-        return $registros;
     }
 }
